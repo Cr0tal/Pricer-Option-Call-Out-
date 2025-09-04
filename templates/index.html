@@ -1,0 +1,166 @@
+<!-- templates/index.html -->
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Option Pricer - Black–Scholes & Monte Carlo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+      .container { max-width: 1100px; margin: auto; }
+      .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
+      .col-4 { grid-column: span 4; }
+      .col-6 { grid-column: span 6; }
+      .col-12 { grid-column: span 12; }
+      .card { padding: 1rem; border: 1px solid #3333; border-radius: 12px; }
+      pre { white-space: pre-wrap; font-size: 0.9rem; }
+      .muted { color: #888; font-size: 0.9rem; }
+      .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      footer { margin-top: 2rem; font-size: 0.9rem; }
+      .inline { display: inline-block; }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Option Pricer <small class="muted">Black–Scholes • Monte Carlo • Greeks • PDF</small></h1>
+      <p>Renseignez les paramètres et lancez la valorisation. Les données spot et la volatilité historique sont récupérées via <span class="code">yfinance</span>.</p>
+
+      <form action="/price" method="post" class="card">
+        <div class="grid">
+          <div class="col-4">
+            <label for="ticker">Ticker (yfinance)</label>
+            <input type="text" id="ticker" name="ticker" placeholder="AAPL" required />
+          </div>
+          <div class="col-4">
+            <label for="strike">Strike</label>
+            <input type="number" step="0.0001" id="strike" name="strike" placeholder="150" required />
+          </div>
+          <div class="col-4">
+            <label for="maturity">Maturité (date)</label>
+            <input type="date" id="maturity" name="maturity" required />
+          </div>
+
+          <div class="col-4">
+            <label for="rate">Taux sans risque (% annuel)</label>
+            <input type="number" step="0.01" id="rate" name="rate" placeholder="2.0" value="2.0" />
+          </div>
+          <div class="col-4">
+            <label for="div_yield">Rendement dividende (% annuel, optionnel)</label>
+            <input type="number" step="0.01" id="div_yield" name="div_yield" placeholder="0.0" />
+          </div>
+          <div class="col-4">
+            <label for="vol">Volatilité (%) — laisser vide pour utiliser la vol. historique</label>
+            <input type="number" step="0.01" id="vol" name="vol" placeholder="" />
+          </div>
+
+          <div class="col-6">
+            <fieldset>
+              <legend>Type d'option</legend>
+              <label>
+                <input type="radio" name="option_type" value="call" checked />
+                Call
+              </label>
+              <label>
+                <input type="radio" name="option_type" value="put" />
+                Put
+              </label>
+            </fieldset>
+          </div>
+
+          <div class="col-6">
+            <fieldset>
+              <legend>Monte Carlo</legend>
+              <label>Nombre de trajectoires
+                <input type="number" id="n_paths" name="n_paths" value="10000" min="100" step="100">
+              </label>
+              <label>Nombre de pas
+                <input type="number" id="n_steps" name="n_steps" value="1" min="1" step="1">
+              </label>
+            </fieldset>
+          </div>
+
+          <div class="col-6">
+            <label for="market_price">Prix de marché (pour IV, optionnel)</label>
+            <input type="number" step="0.0001" id="market_price" name="market_price" placeholder="">
+          </div>
+
+          <div class="col-12">
+            <button type="submit">Lancer la valorisation</button>
+          </div>
+        </div>
+      </form>
+
+      {% if error %}
+        <article class="card" style="border-color:#e33">
+          <strong>Erreur :</strong> {{ error }}
+        </article>
+      {% endif %}
+
+      {% if results %}
+        <section class="card">
+          <h2>Résultats</h2>
+          <div class="grid">
+            <div class="col-6">
+              <h3>Inputs & Market Data</h3>
+              <ul>
+                <li><strong>Ticker</strong>: {{inputs.ticker}}</li>
+                <li><strong>Spot S0</strong>: {{inputs.S0}}</li>
+                <li><strong>Strike K</strong>: {{inputs.K}}</li>
+                <li><strong>T (années)</strong>: {{inputs.T}}</li>
+                <li><strong>r</strong>: {{inputs.r}}</li>
+                <li><strong>q</strong>: {{inputs.q}}</li>
+                <li><strong>σ utilisé</strong>: {{inputs.sigma_used}}</li>
+                <li><strong>Méthode MC</strong>: {{inputs.n_paths}} paths / {{inputs.n_steps}} steps</li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <h3>Valorisation</h3>
+              <ul>
+                <li><strong>BS Price</strong>: {{results.bs_price}}</li>
+                <li><strong>MC Price</strong>: {{results.mc_price}}</li>
+                {% if results.mc_stderr %}
+                  <li><strong>MC StdErr</strong>: {{results.mc_stderr}}</li>
+                {% endif %}
+                {% if results.implied_vol %}
+                  <li><strong>Implied Vol</strong>: {{results.implied_vol}}</li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+
+          {% if results.greeks %}
+            <h3>Greeks</h3>
+            <div class="grid">
+              <div class="col-6">
+                <ul>
+                  <li>Δ (call): {{results.greeks.delta_call}}</li>
+                  <li>Δ (put): {{results.greeks.delta_put}}</li>
+                  <li>Γ: {{results.greeks.gamma}}</li>
+                  <li>Vega: {{results.greeks.vega}}</li>
+                </ul>
+              </div>
+              <div class="col-6">
+                <ul>
+                  <li>Θ (call): {{results.greeks.theta_call}}</li>
+                  <li>Θ (put): {{results.greeks.theta_put}}</li>
+                  <li>ρ (call): {{results.greeks.rho_call}}</li>
+                  <li>ρ (put): {{results.greeks.rho_put}}</li>
+                </ul>
+              </div>
+            </div>
+          {% endif %}
+
+          <form action="/report" method="post" class="inline">
+            <!-- re-post the original inputs to regenerate the PDF -->
+            <input type="hidden" name="payload" value='{{ payload_json }}'>
+            <button type="submit">Télécharger le rapport PDF</button>
+          </form>
+        </section>
+      {% endif %}
+
+      <footer>
+        <p class="muted">© {{year}} • Built with Flask, numpy, scipy, matplotlib, yfinance, reportlab.</p>
+      </footer>
+    </main>
+  </body>
+</html>
