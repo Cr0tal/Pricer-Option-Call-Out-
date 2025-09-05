@@ -14,7 +14,7 @@ from app.implied_vol import implied_vol_bs
 
 app = Flask(__name__)
 
-# --- Endpoint diagnostic ---
+
 @app.route("/diag")
 def diag():
     import sys
