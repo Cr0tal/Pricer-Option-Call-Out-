@@ -1,32 +1,32 @@
-# 📈 Option Pricer Flask
+# 📈 Option Pricer Call/Put 
 
-**🇫🇷 Outil complet de valorisation d’options européennes**  
-**🇬🇧 Full-stack European Option Pricing Tool**
+**Outil complet de valorisation d’options européennes**  
+
 
 ---
 
 ## ✨ Features / Fonctionnalités
 
-- **Black–Scholes model** (call & put)  
-- **Monte Carlo simulation** with configurable paths & steps  
-- **Implied Volatility** calculation (Brent root-finding)  
-- **Greeks**: Δ, Γ, Vega, Θ, ρ  
-- **Automatic data retrieval** (spot price, hist. vol, dividends via `yfinance`)  
-- **PDF Report generation** with inputs, results, Greeks, payoff chart  
-- **Flask web interface** for easy parameter input + one-click PDF download  
+- **modèle Black–Scholes** (call & put)  
+- **Simulation Monte Carlo** avec configuration de pas  
+- **volatilité Implicite**  
+- **Les Grecs**: Δ, Γ, Vega, Θ, ρ  
+- **Data automatique** (prix spot , hist. vol, dividends via `yfinance`)  
+- **Génération de rapport PDf** avec inputs, resultats, Grecs,graphique payoff   
+- **interface web** pdf téléchargeable   
 
 ---
 
 
 ##  Installation & Usage
 
-### 1. Clone the repository
+### 1. Clone le repository 
 ```bash
 git clone https://github.com/<TON_USERNAME>/option-pricer-flask.git
 cd option-pricer-flask
 
 ```
-### 2 Create & activate a virtual environment
+### 2 crée et activé un environement 
 
 ```bash
 python -m venv .venv
@@ -44,17 +44,18 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
-Open your browser at http://127.0.0.1:5000
+ouvrir à -> http://127.0.0.1:5000
 
 
-Example (Exemple)
+Exemple:
 Ticker: AAPL
-Strike (K): 150
+Strike (K): 270
 Maturity: 2025-12-20
 Rate (r): 2%
-Volatility: leave empty to use historical vol
-Market price: optional, for IV calculation
-The app computes Black–Scholes price, Monte Carlo price, Greeks, implied volatility, and generates a custom PDF report.
+Volatilité: laissé vide pour utlisé la colatilité historique
+Prix de marché: 
+L'app calcule le prix Black-Sholes,le prix Monte Carlo, les Grecs, la volatilité implicite et génère un rapport PDF.
+
 '''
 
 '''
