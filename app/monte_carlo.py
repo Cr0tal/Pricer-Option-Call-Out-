@@ -17,10 +17,7 @@ def price_mc(
     rng_seed: int | None = 42,
     option_type: OptionType = "call",
 ) -> float:
-    """Monte Carlo pricing under risk-neutral GBM.
-    If n_steps == 1, uses exact terminal distribution; else uses Euler steps.
-    Returns discounted expected payoff.
-    """
+    
     if T <= 0:
         return max(S0 - K, 0.0) if option_type == "call" else max(K - S0, 0.0)
     rng = np.random.default_rng(rng_seed)
