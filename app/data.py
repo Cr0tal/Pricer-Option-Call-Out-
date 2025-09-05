@@ -14,9 +14,7 @@ class MarketData:
     dividend_yield: float | None
 
 def fetch_market_data(ticker: str, lookback_days: int = 365) -> MarketData:
-    """Fetch spot (last close), annualized historical vol (daily returns, sqrt(252)),
-    and an approximate dividend yield using last 1Y dividends / spot.
-    """
+    
     tkr = yf.Ticker(ticker)
     hist = tkr.history(period=f"{lookback_days}d")
     if hist is None or hist.empty:
@@ -24,11 +22,11 @@ def fetch_market_data(ticker: str, lookback_days: int = 365) -> MarketData:
     close = hist["Close"].dropna()
     spot = float(close.iloc[-1])
 
-    # Historical volatility
+    # Volatilité Historique 
     rets = close.pct_change().dropna()
     vol = float(rets.std() * np.sqrt(252)) if not rets.empty else None
 
-    # Dividend yield approx
+    # Approximation de la rentabilité du Dividende
     try:
         divs = tkr.dividends
         if divs is not None and not divs.empty:
