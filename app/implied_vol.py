@@ -3,10 +3,10 @@ from __future__ import annotations
 import math
 from typing import Literal, Optional
 
-# --- Imports robustes (package ou script direct) ---
+# --- Imports robustes (package ou script directe) ---
 if __package__ is None or __package__ == "":
     import sys, pathlib
-    root = pathlib.Path(__file__).resolve().parents[1]  # .../option_pricer_flask
+    root = pathlib.Path(__file__).resolve().parents[1]  
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
     from app.black_scholes import BSInputs, price
