@@ -42,7 +42,7 @@ def price(inputs: BSInputs, option_type: OptionType = "call") -> float:
 
 def greeks(inputs: BSInputs) -> Dict[str, float]:
     S, K, T, r, q, sigma = inputs.S, inputs.K, inputs.T, inputs.r, inputs.q, inputs.sigma
-    # Handle T -> 0 separately to avoid div by zero
+    # T > 0 pour éviter la division par zéro
     if T <= 0 or sigma <= 0 or S <= 0 or K <= 0:
         return {k: float("nan") for k in ["delta_call", "delta_put", "gamma", "vega", "theta_call", "theta_put", "rho_call", "rho_put"]}
     d1, d2 = _d1_d2(S, K, T, r, q, sigma)
@@ -53,7 +53,7 @@ def greeks(inputs: BSInputs) -> Dict[str, float]:
     delta_call = disc_q * norm.cdf(d1)
     delta_put = disc_q * (norm.cdf(d1) - 1.0)
     gamma = (disc_q * pdf_d1) / (S * sigma * math.sqrt(T))
-    vega = S * disc_q * pdf_d1 * math.sqrt(T)           # per 1.0 of vol
+    vega = S * disc_q * pdf_d1 * math.sqrt(T)           
     theta_call = (-(S * disc_q * pdf_d1 * sigma) / (2 * math.sqrt(T))
                   - r * K * disc_r * norm.cdf(d2)
                   + q * S * disc_q * norm.cdf(d1))
