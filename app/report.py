@@ -37,7 +37,7 @@ def _plot_payoff_png(option_type: OptionType, K: float, S0: float) -> bytes:
     return buf.getvalue()
 
 def build_pdf_report(output_path: str, inputs: Dict[str, Any], results: Dict[str, Any], option_type: OptionType) -> str:
-    """Construit un PDF (inputs, résultats, greeks, payoff) et l'enregistre sur output_path."""
+    """Construit un PDF (inputs, résultats, Grecs, payoff) et l'enregistre sur output_path."""
     doc = SimpleDocTemplate(output_path, pagesize=A4)
     styles = getSampleStyleSheet()
     story = []
