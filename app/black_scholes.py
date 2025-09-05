@@ -10,12 +10,12 @@ OptionType = Literal["call", "put"]
 
 @dataclass
 class BSInputs:
-    S: float           # Spot price
+    S: float           # prix Spot 
     K: float           # Strike
-    T: float           # Year fraction to maturity
-    r: float           # Risk-free rate (annualized, continuous/simple approx OK)
-    q: float = 0.0     # Continuous dividend yield
-    sigma: float = 0.2 # Volatility (annualized)
+    T: float           # prorata temporis
+    r: float           # Taux sans risque anuualisé, temps continu
+    q: float = 0.0     # rentabilité des dividende en temps continu
+    sigma: float = 0.2 # Volatilité (annualisée)
 
 def _d1_d2(S: float, K: float, T: float, r: float, q: float, sigma: float):
     if T <= 0 or sigma <= 0 or S <= 0 or K <= 0:
@@ -28,8 +28,7 @@ def _d1_d2(S: float, K: float, T: float, r: float, q: float, sigma: float):
 
 def price(inputs: BSInputs, option_type: OptionType = "call") -> float:
     S, K, T, r, q, sigma = inputs.S, inputs.K, inputs.T, inputs.r, inputs.q, inputs.sigma
-    if T <= 0:
-        # At expiry, option value equals intrinsic value
+    if T <= 0:        
         if option_type == "call":
             return max(S - K, 0.0)
         return max(K - S, 0.0)
