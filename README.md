@@ -1,4 +1,4 @@
-# 📈 Option Pricer Call/Put 
+# **Option Pricer Call/Put** 
 
 **Outil complet de valorisation d’options européennes**  
 
