@@ -5,7 +5,7 @@
 
 ---
 
-## ✨ Features / Fonctionnalités
+##  Features / Fonctionnalités
 
 - **modèle Black–Scholes** (call & put)  
 - **Simulation Monte Carlo** avec configuration de pas  
@@ -48,23 +48,23 @@ ouvrir à -> http://127.0.0.1:5000
 
 
 Exemple:
-Ticker: AAPL
-Strike (K): 270
-Maturity: 2025-12-20
-Rate (r): 2%
-Volatilité: laissé vide pour utlisé la colatilité historique
-Prix de marché: 
-L'app calcule le prix Black-Sholes,le prix Monte Carlo, les Grecs, la volatilité implicite et génère un rapport PDF.
+Ticker: AAPL  
+Strike (K): 270  
+Maturity: 2025-12-20  
+Rate (r): 2%  
+Volatilité: laissé vide pour utlisé la colatilité historique  
+Prix de marché:   
+L'app calcule le prix Black-Sholes,le prix Monte Carlo, les Grecs, la volatilité implicite et génère un.  rapport PDF.  
 
 '''
 
 '''
-Tech Stack
-Python 3.10+
-Flask (web)
-yfinance (market data)
-numpy, scipy (math, stats)
-matplotlib (plotting)
-reportlab (PDF generation)
+Tech Stack  
+Python 3.10+  
+Flask (web)  
+yfinance (market data)  
+numpy, scipy (math, stats)  
+matplotlib (plotting)  
+reportlab (PDF generation)  
 '''
 
